@@ -133,15 +133,15 @@ export default {
     },
     createPatient() {
       const patientData = {
-        name: this.name,
-        surname: this.surname,
-        patronymic: this.patronymic,
-        birthday: this.birthday,
-        gender: this.gender,
-        snils: this.snils,
-        weight: this.weight,
-        height: this.height,
-        age: this.age
+        name: this.fields.name,
+        surname: this.fields.surname,
+        patronymic: this.fields.patronymic,
+        birthday: this.fields.birthday,
+        gender: this.fields.gender,
+        snils: this.fields.snils,
+        weight: this.fields.weight,
+        height: this.fields.height,
+        age: this.fields.age
       };
       this.ADD_PATIENT(patientData);
     },
