@@ -32,14 +32,19 @@ const routes = [
       metaTitle: 'Редактирование пациента'
     }
   },
-  // {
-  //   path: '/consulting',
-  //   name: 'Consulting',
-  //   component: () => import('@/views/ConsultingPage.vue'),
-  //   meta: {
-  //     metaTitle: 'Консультации'
-  //   }
-  // }
+  {
+    path: '/patients/:id',
+    name: 'PatientInfo',
+    component: () => import('@/views/PatientInfo.vue')
+  },
+  {
+    path: '/patients/:id/consultation/add',
+    name: 'ConsultationAdd',
+    component: () => import('@/views/ConsultationAdd.vue'),
+    meta: {
+      metaTitle: 'Добавление консультации'
+    }
+  },
 ]
 
 const router = new VueRouter({

@@ -17,10 +17,23 @@
       </v-card-title>
       <v-data-table :headers="headers" :items="GET_PATIENTS" :search="search">
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon small class="mr-2" @click="toEditPatient(item)">
+          <v-icon
+            class="mr-2"
+            title="Данные пациента"
+            @click="toPatientInfo(item)"
+          >
+            mdi-account
+          </v-icon>
+          <v-icon
+            class="mr-2"
+            title="Редактировать"
+            @click="toEditPatient(item)"
+          >
             mdi-pencil
           </v-icon>
-          <v-icon small @click="deletePatient(item)"> mdi-delete </v-icon>
+          <v-icon title="Удалить" @click="deletePatient(item)">
+            mdi-delete
+          </v-icon>
 
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
@@ -96,8 +109,14 @@ export default {
         params: { id: patientData.id }
       });
     },
-    deletePatient(item) {
-      this.deletedIndex = this.GET_PATIENTS.indexOf(item);
+    toPatientInfo(patientData) {
+      this.$router.push({
+        name: "PatientInfo",
+        params: { id: patientData.id }
+      });
+    },
+    deletePatient(patientData) {
+      this.deletedIndex = this.GET_PATIENTS.indexOf(patientData);
       this.dialogDelete = true;
     },
     closeDelete() {
