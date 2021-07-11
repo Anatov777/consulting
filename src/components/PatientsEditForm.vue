@@ -46,7 +46,8 @@
         class="mr-4"
         @click="submitForm"
       >
-        Создать
+        <span v-if="isEditMode">Сохранить</span>
+        <span v-else>Создать</span>
       </v-btn>
 
       <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
@@ -95,21 +96,23 @@ export default {
     items: ["Мужской", "Женский"]
   }),
   created() {
-    if (this.mode === "edit") {
-      console.log(this.$route.params.id);
-      const patientData = this.GET_PATIENT_BY_ID(this.$route.params.id);
-      console.log(patientData);
-      // this.fields = { ...patientData };
-      console.log(this.fields);
+    if (this.isEditMode) {
+      const patientData = this.GET_PATIENT_BY_ID(`${this.patientId}`);
+      this.fields = { ...patientData };
     }
   },
   computed: {
-    ...mapGetters(["GET_PATIENT_BY_ID"])
+    ...mapGetters(["GET_PATIENT_BY_ID"]),
+    isEditMode() {
+      return this.mode === "edit";
+    },
+    patientId() {
+      return this.$route.params.id;
+    }
   },
 
   methods: {
-    ...mapActions(["ADD_PATIENT"]),
-    // ...mapGetters(["GET_PATIENT_BY_ID"]),
+    ...mapActions(["ADD_PATIENT", "EDIT_PATIENT"]),
     validate() {
       this.$refs.form.validate();
     },
@@ -121,7 +124,11 @@ export default {
     },
     submitForm() {
       if (this.$refs.form.validate()) {
-        this.createPatient();
+        if (this.isEditMode) {
+          this.editPatient();
+        } else {
+          this.createPatient();
+        }
       }
     },
     createPatient() {
@@ -137,6 +144,21 @@ export default {
         age: this.age
       };
       this.ADD_PATIENT(patientData);
+    },
+    editPatient() {
+      const patientData = {
+        id: `${this.patientId}`,
+        name: this.fields.name,
+        surname: this.fields.surname,
+        patronymic: this.fields.patronymic,
+        birthday: this.fields.birthday,
+        gender: this.fields.gender,
+        snils: this.fields.snils,
+        weight: this.fields.weight,
+        height: this.fields.height,
+        age: this.fields.age
+      };
+      this.EDIT_PATIENT(patientData);
     }
   }
 };
