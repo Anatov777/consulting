@@ -9,7 +9,7 @@
       text="Добавить консультацию"
     />
 
-    <v-data-table :headers="headers" :items="consultationData">
+    <v-data-table :headers="headers" :items="patientConsultations">
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon
           class="mr-2"
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "PatientConsultation",
@@ -55,6 +55,7 @@ export default {
   data() {
     return {
       dialogDelete: false,
+      deletedIndex: null,
       headers: [
         {
           text: "Дата",
@@ -81,11 +82,12 @@ export default {
     patientId() {
       return this.$route.params.id;
     },
-    consultationData() {
+    patientConsultations() {
       return this.GET_CONSULTATIONS_BY_PATIENT(this.patientId);
     }
   },
   methods: {
+    ...mapActions(["DELETE_CONSULTATION"]),
     toEditConsultation(consultationData) {
       this.$router.push({
         name: "ConsultationEdit",
@@ -95,14 +97,16 @@ export default {
         }
       });
     },
-    deleteConsultation(item) {
-      console.log(item);
+    deleteConsultation(consultationData) {
+      this.deletedIndex = this.patientConsultations.indexOf(consultationData);
+      this.dialogDelete = true;
     },
     closeDelete() {
-      return;
+      this.dialogDelete = false;
     },
     deleteItemConfirm() {
-      return;
+      this.DELETE_CONSULTATION(this.deletedIndex);
+      this.dialogDelete = false;
     }
   }
 };
