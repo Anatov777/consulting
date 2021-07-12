@@ -86,8 +86,14 @@ export default {
     }
   },
   methods: {
-    toEditConsultation(item) {
-      console.log(item);
+    toEditConsultation(consultationData) {
+      this.$router.push({
+        name: "ConsultationEdit",
+        params: {
+          patientId: this.patientId,
+          consultationId: consultationData.id
+        }
+      });
     },
     deleteConsultation(item) {
       console.log(item);

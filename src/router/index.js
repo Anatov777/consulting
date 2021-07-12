@@ -25,6 +25,11 @@ const routes = [
     }
   },
   {
+    path: '/patients/:id',
+    name: 'PatientInfo',
+    component: () => import('@/views/PatientInfo.vue')
+  },
+  {
     path: '/patients/:id/edit',
     name: 'PatientsEdit',
     component: () => import('@/views/PatientEdit.vue'),
@@ -33,16 +38,19 @@ const routes = [
     }
   },
   {
-    path: '/patients/:id',
-    name: 'PatientInfo',
-    component: () => import('@/views/PatientInfo.vue')
-  },
-  {
-    path: '/patients/:id/consultation/add',
+    path: '/patients/:patientId/consultation/add',
     name: 'ConsultationAdd',
     component: () => import('@/views/ConsultationAdd.vue'),
     meta: {
       metaTitle: 'Добавление консультации'
+    }
+  },
+  {
+    path: '/patients/:patientId/consultation/:consultationId/edit',
+    name: 'ConsultationEdit',
+    component: () => import('@/views/ConsultationEdit.vue'),
+    meta: {
+      metaTitle: 'Редактирование консультации'
     }
   },
 ]

@@ -58,24 +58,29 @@ export default {
     // Fields rules
     requiredRule: [(v) => !!v || "Обязательное поле"]
   }),
-  // created() {
-  //   if (this.isEditMode) {
-  //     const patientData = this.GET_PATIENT_BY_ID(`${this.patientId}`);
-  //     this.fields = { ...patientData };
-  //   }
-  // },
+  created() {
+    if (this.isEditMode) {
+      const consultationData = this.GET_CONSULTATIONS_BY_ID(
+        `${this.consultationId}`
+      );
+      this.fields = { ...consultationData };
+    }
+  },
   computed: {
-    ...mapGetters(["GET_PATIENT_BY_ID"]),
+    ...mapGetters(["GET_CONSULTATIONS_BY_ID"]),
     isEditMode() {
       return this.mode === "edit";
     },
     patientId() {
-      return this.$route.params.id;
+      return this.$route.params.patientId;
+    },
+    consultationId() {
+      return this.$route.params.consultationId;
     }
   },
 
   methods: {
-    ...mapActions(["ADD_CONSULTATION", "EDIT_PATIENT"]),
+    ...mapActions(["ADD_CONSULTATION", "EDIT_CONSULTATION"]),
     validate() {
       this.$refs.form.validate();
     },
@@ -88,7 +93,7 @@ export default {
     submitForm() {
       if (this.$refs.form.validate()) {
         if (this.isEditMode) {
-          this.editPatient();
+          this.editConsultation();
         } else {
           this.addConsultation();
         }
@@ -103,20 +108,15 @@ export default {
       };
       this.ADD_CONSULTATION(consultationData);
     },
-    editPatient() {
-      const patientData = {
-        id: `${this.patientId}`,
-        name: this.fields.name,
-        surname: this.fields.surname,
-        patronymic: this.fields.patronymic,
-        birthday: this.fields.birthday,
-        gender: this.fields.gender,
-        snils: this.fields.snils,
-        weight: this.fields.weight,
-        height: this.fields.height,
-        age: this.fields.age
+    editConsultation() {
+      const consultationData = {
+        date: this.fields.date,
+        time: this.fields.time,
+        symptoms: this.fields.symptoms,
+        patientId: this.patientId,
+        id: `${this.consultationId}`
       };
-      this.EDIT_PATIENT(patientData);
+      this.EDIT_CONSULTATION(consultationData);
     }
   }
 };
