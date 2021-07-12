@@ -7,7 +7,7 @@ const getters = {
   GET_CONSULTATIONS_BY_PATIENT: (state) => (patientId) => {
     return state.consultations.filter((item) => item.patientId === patientId)
   },
-  GET_CONSULTATIONS_BY_ID: (state) => (id) => {
+  GET_CONSULTATION_BY_ID: (state) => (id) => {
     return state.consultations.find((item) => item.id === id)
   }
 }

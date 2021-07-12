@@ -6,6 +6,10 @@ import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false;
 
+import moment from 'moment'
+require('moment/locale/ru')
+Vue.prototype.moment = moment
+
 new Vue({
   router,
   store,
