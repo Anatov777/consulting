@@ -47,6 +47,7 @@
       ></v-text-field> -->
 
       <v-menu
+        v-if="fields.date"
         ref="timeMenu"
         v-model="timeMenu"
         :close-on-content-click="false"
@@ -74,6 +75,7 @@
           format="24hr"
           full-width
           @click:minute="$refs.timeMenu.save(fields.time)"
+          @click:hour="setSelectedHour"
         ></v-time-picker>
       </v-menu>
 
@@ -101,6 +103,7 @@
 
       <v-btn color="warning" @click="resetValidation"> Reset Validation </v-btn>
     </v-form>
+    {{ notAllowedConsultationTimes }}
   </div>
 </template>
 
@@ -121,6 +124,7 @@ export default {
     },
     menu: false,
     timeMenu: false,
+    selectedHour: null,
     // Fields rules
     requiredRule: [(v) => !!v || "Обязательное поле"]
   }),
@@ -154,6 +158,37 @@ export default {
       return this.fields.date
         ? this.moment(this.fields.date).format("DD/MM/YYYY")
         : "";
+    },
+    notAllowedConsultationTimes() {
+      console.log(
+        this.GET_CONSULTATIONS.reduce((acc, cur) => {
+          if (this.fields.date === cur.date) {
+            const time = cur.time.split(":");
+            if (!acc[time[0]]) {
+              acc[time[0]] = [];
+            }
+
+            acc[time[0]].push(`${time[1]}`);
+          }
+          return acc;
+        }, {})
+      );
+      // return this.GET_CONSULTATIONS.filter((item) => {
+      //   if (item.date === this.fields.date) {
+      //     return item.time;
+      //   }
+      // });
+      return this.GET_CONSULTATIONS.reduce((acc, cur) => {
+        if (this.fields.date === cur.date) {
+          const time = cur.time.split(":");
+          if (!acc[time[0]]) {
+            acc[time[0]] = [];
+          }
+
+          acc[time[0]].push(`${time[1]}`);
+        }
+        return acc;
+      }, {});
     }
   },
 
@@ -205,10 +240,29 @@ export default {
       return value >= firstAllowedDate;
     },
     allowedHours(value) {
-      return value >= 8 && value <= 20;
+      // console.log(this.activeConsultationsTimes[this.fields.date]);
+      return (
+        value >= 8 &&
+        value < 20 &&
+        (`${this.getTimeWithInitialZero(value)}-45` >
+          this.moment().format("HH-mm") ||
+          this.fields.date > this.moment().format("YYYY-MM-DD")) &&
+        this.notAllowedConsultationTimes[value]?.length !== 4
+      );
     },
     allowedMinutes(value) {
-      return value % 15 === 0;
+      return (
+        value % 15 === 0 &&
+        !this.notAllowedConsultationTimes[this.selectedHour].includes(
+          `${value}`
+        )
+      );
+    },
+    getTimeWithInitialZero(value) {
+      return value < 10 ? (value = `0${value}`) : value;
+    },
+    setSelectedHour(value) {
+      this.selectedHour = value;
     }
   }
 };
