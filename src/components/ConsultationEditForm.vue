@@ -253,7 +253,7 @@ export default {
     allowedMinutes(value) {
       return (
         value % 15 === 0 &&
-        !this.notAllowedConsultationTimes[this.selectedHour].includes(
+        !this.notAllowedConsultationTimes[this.selectedHour]?.includes(
           `${value}`
         )
       );

@@ -23,7 +23,7 @@ const actions = {
 
 const mutations = {
   ADD_PATIENT_MUTATION: (state, patient) => {
-    patient.id = `${state.patients.length + 1}`
+    patient.id = `${+state.patients[state.patients.length - 1].id + 1 }`
     state.patients.push(patient)
     localStorage.setItem('patients', JSON.stringify(state.patients))
   },
