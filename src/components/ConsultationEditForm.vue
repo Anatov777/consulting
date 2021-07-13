@@ -1,15 +1,9 @@
 <template>
   <div>
     <v-form ref="form" v-model="valid" lazy-validation>
-      <!-- <v-text-field
-        v-model="fields.date"
-        :rules="requiredRule"
-        label="Дата"
-      ></v-text-field> -->
-
       <v-menu
-        ref="menu"
-        v-model="menu"
+        ref="dateMenu"
+        v-model="dateMenu"
         :close-on-content-click="false"
         :return-value.sync="fields.date"
         transition="scale-transition"
@@ -19,10 +13,12 @@
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
             :value="dateFormatted"
-            label="Дата"
+            :error-messages="dateErrors"
+            label="Дата *"
             readonly
             v-bind="attrs"
             v-on="on"
+            @blur="$v.fields.date.$touch()"
           ></v-text-field>
         </template>
         <v-date-picker
@@ -33,18 +29,12 @@
           scrollable
         >
           <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
-          <v-btn text color="primary" @click="$refs.menu.save(fields.date)">
+          <v-btn text color="primary" @click="dateMenu = false"> Cancel </v-btn>
+          <v-btn text color="primary" @click="$refs.dateMenu.save(fields.date)">
             OK
           </v-btn>
         </v-date-picker>
       </v-menu>
-
-      <!-- <v-text-field
-        v-model="fields.time"
-        :rules="requiredRule"
-        label="Время"
-      ></v-text-field> -->
 
       <v-menu
         v-if="fields.date"
@@ -61,10 +51,12 @@
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
             v-model="fields.time"
-            label="Время"
+            :error-messages="timeErrors"
+            label="Время *"
             readonly
             v-bind="attrs"
             v-on="on"
+            @blur="$v.fields.time.$touch()"
           ></v-text-field>
         </template>
         <v-time-picker
@@ -79,15 +71,15 @@
         ></v-time-picker>
       </v-menu>
 
-      <v-text-field v-model="fields.symptoms" label="Симптомы"></v-text-field>
-
-      <!-- <v-textarea
+      <v-textarea
         v-model="fields.symptoms"
-        filled
+        :error-messages="symptomsErrors"
         label="Симптомы"
-        rows="2"
+        rows="3"
+        outlined
         auto-grow
-      ></v-textarea> -->
+        @blur="$v.fields.symptoms.$touch()"
+      ></v-textarea>
 
       <v-btn
         :disabled="!valid"
@@ -99,21 +91,30 @@
         <span v-else>Создать</span>
       </v-btn>
 
-      <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
+      <v-btn color="error" class="mr-4" @click="reset"> Очистить </v-btn>
 
-      <v-btn color="warning" @click="resetValidation"> Reset Validation </v-btn>
+      <v-btn color="error" class="mr-4" @click="setTestData"> Заполнить </v-btn>
     </v-form>
-    {{ notAllowedConsultationTimes }}
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import { required } from "vuelidate/lib/validators";
 
 export default {
   name: "ConsultationEditForm",
   props: {
     mode: String
+  },
+  validations: {
+    fields: {
+      date: { required },
+      time: { required },
+      symptoms: {
+        textRule: (value) => /^[^<>]*$/i.test(value)
+      }
+    }
   },
   data: () => ({
     valid: true,
@@ -122,11 +123,9 @@ export default {
       time: null,
       symptoms: ""
     },
-    menu: false,
+    dateMenu: false,
     timeMenu: false,
-    selectedHour: null,
-    // Fields rules
-    requiredRule: [(v) => !!v || "Обязательное поле"]
+    selectedHour: null
   }),
   created() {
     if (this.isEditMode) {
@@ -151,33 +150,12 @@ export default {
     consultationId() {
       return this.$route.params.consultationId;
     },
-    // patientConsultations() {
-    //   return this.GET_CONSULTATIONS_BY_PATIENT(this.patientId);
-    // },
     dateFormatted() {
       return this.fields.date
         ? this.moment(this.fields.date).format("DD/MM/YYYY")
         : "";
     },
     notAllowedConsultationTimes() {
-      console.log(
-        this.GET_CONSULTATIONS.reduce((acc, cur) => {
-          if (this.fields.date === cur.date) {
-            const time = cur.time.split(":");
-            if (!acc[time[0]]) {
-              acc[time[0]] = [];
-            }
-
-            acc[time[0]].push(`${time[1]}`);
-          }
-          return acc;
-        }, {})
-      );
-      // return this.GET_CONSULTATIONS.filter((item) => {
-      //   if (item.date === this.fields.date) {
-      //     return item.time;
-      //   }
-      // });
       return this.GET_CONSULTATIONS.reduce((acc, cur) => {
         if (this.fields.date === cur.date) {
           const time = cur.time.split(":");
@@ -189,22 +167,50 @@ export default {
         }
         return acc;
       }, {});
+    },
+
+    // Ошибки полей
+
+    dateErrors() {
+      const errors = [];
+      if (!this.$v.fields.date.$dirty) return errors;
+      !this.$v.fields.date.required && errors.push('Поле "Дата" обязательно.');
+      return errors;
+    },
+    timeErrors() {
+      const errors = [];
+      if (!this.$v.fields.time.$dirty) return errors;
+      !this.$v.fields.time.required && errors.push('Поле "Время" обязательно.');
+      return errors;
+    },
+    symptomsErrors() {
+      const errors = [];
+      if (!this.$v.fields.symptoms.$dirty) return errors;
+      !this.$v.fields.symptoms.textRule &&
+        errors.push(
+          'Поле "Симптомы" может содержать только буквы, цифры, знаки препинания.'
+        );
+      return errors;
     }
   },
 
   methods: {
     ...mapActions(["ADD_CONSULTATION", "EDIT_CONSULTATION"]),
-    validate() {
-      this.$refs.form.validate();
-    },
+    // validate() {
+    //   this.$refs.form.validate();
+    // },
     reset() {
       this.$refs.form.reset();
+      this.fields.date = null;
+      this.fields.time = null;
+      this.fields.symptoms = "";
     },
-    resetValidation() {
-      this.$refs.form.resetValidation();
-    },
-    submitForm() {
-      if (this.$refs.form.validate()) {
+    // resetValidation() {
+    //   this.$refs.form.resetValidation();
+    // },
+    async submitForm() {
+      await this.$v.$touch();
+      if (this.valid) {
         if (this.isEditMode) {
           this.editConsultation();
         } else {
@@ -240,7 +246,6 @@ export default {
       return value >= firstAllowedDate;
     },
     allowedHours(value) {
-      // console.log(this.activeConsultationsTimes[this.fields.date]);
       return (
         value >= 8 &&
         value < 20 &&
@@ -263,6 +268,12 @@ export default {
     },
     setSelectedHour(value) {
       this.selectedHour = value;
+    },
+    // TEST
+    setTestData() {
+      this.fields.date = "2020-11-11";
+      this.fields.time = "15:30";
+      this.fields.symptoms = "Кашель, температура. И больше ничего";
     }
   }
 };

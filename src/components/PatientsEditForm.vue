@@ -31,7 +31,7 @@
 
       <v-select
         v-model="fields.gender"
-        :items="items"
+        :items="genders"
         :error-messages="genderErrors"
         label="Пол *"
         @blur="$v.fields.gender.$touch()"
@@ -79,7 +79,6 @@
 
       <v-btn color="error" class="mr-4" @click="setTestData"> Заполнить </v-btn>
     </v-form>
-    {{ valid }}
   </div>
 </template>
 
@@ -131,7 +130,7 @@ export default {
     //   (v) => isValidSnils(v) || "Неверная контрольная сумма СНИЛС"
     // ],
     // select: null,
-    items: ["Мужской", "Женский"]
+    genders: ["Мужской", "Женский"]
   }),
   created() {
     if (this.isEditMode) {
@@ -233,6 +232,15 @@ export default {
     // },
     reset() {
       this.$refs.form.reset();
+      this.fields.surname = "";
+      this.fields.name = "";
+      this.fields.patronymic = "";
+      this.fields.birthday = "";
+      this.fields.gender = "";
+      this.fields.snils = "";
+      this.fields.weight = "";
+      this.fields.height = "";
+      this.fields.age = "";
     },
     async submitForm() {
       await this.$v.$touch();
@@ -262,7 +270,7 @@ export default {
       this.ADD_PATIENT(patientData);
     },
     editPatient() {
-      const patientData = this.getPatientData();
+      let patientData = this.getPatientData();
       patientData.id = `${this.patientId}`;
       this.EDIT_PATIENT(patientData);
     },
