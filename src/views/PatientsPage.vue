@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h1>Список пациентов</h1>
-    <base-button path-to="/patients/add" text="Добавить пациента" />
-    {{ GET_PATIENTS }}
+    <!-- {{ GET_PATIENTS }} -->
     <v-card>
       <v-card-title>
         Пациенты
@@ -64,7 +62,7 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "PatientsPage",
   components: {
-    BaseButton: () => import("@/components/BaseButton")
+    // BaseButton: () => import("@/components/BaseButton")
   },
   data() {
     return {
@@ -106,13 +104,13 @@ export default {
     toEditPatient(patientData) {
       this.$router.push({
         name: "PatientsEdit",
-        params: { id: patientData.id }
+        params: { patientId: patientData.id }
       });
     },
     toPatientInfo(patientData) {
       this.$router.push({
         name: "PatientInfo",
-        params: { id: patientData.id }
+        params: { patientId: patientData.id }
       });
     },
     deletePatient(patientData) {

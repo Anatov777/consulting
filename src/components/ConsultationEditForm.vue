@@ -216,6 +216,7 @@ export default {
         } else {
           this.addConsultation();
         }
+        this.toPatientInfoPage();
       }
     },
     addConsultation() {
@@ -268,6 +269,11 @@ export default {
     },
     setSelectedHour(value) {
       this.selectedHour = value;
+    },
+    toPatientInfoPage() {
+      return window.history.length > 2
+        ? this.$router.go(-1)
+        : this.$router.push("/patients");
     },
     // TEST
     setTestData() {

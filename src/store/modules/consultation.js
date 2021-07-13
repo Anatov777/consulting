@@ -26,7 +26,7 @@ const actions = {
 
 const mutations = {
   ADD_CONSULTATION_MUTATION: (state, consultationData) => {
-    consultationData.id = `${state.consultations.length + 1}`
+    consultationData.id = `${+state.consultations[state.consultations.length - 1].id + 1}`
     state.consultations.push(consultationData)
     localStorage.setItem('consultations', JSON.stringify(state.consultations))
   },

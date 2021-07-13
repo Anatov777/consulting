@@ -48,7 +48,7 @@ export default {
   computed: {
     ...mapGetters(["GET_PATIENT_BY_ID"]),
     patientId() {
-      return this.$route.params.id;
+      return this.$route.params.patientId;
     },
     patientData() {
       return this.GET_PATIENT_BY_ID(this.patientId);

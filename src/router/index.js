@@ -10,10 +10,10 @@ const routes = [
   },
   {
     path: '/patients',
-    name: 'Patients',
+    name: 'PatientsPage',
     component: () => import('@/views/PatientsPage.vue'),
     meta: {
-      metaTitle: 'Пациенты'
+      metaTitle: 'Список пациентов'
     }
   },
   {
@@ -25,12 +25,15 @@ const routes = [
     }
   },
   {
-    path: '/patients/:id',
+    path: '/patients/:patientId',
     name: 'PatientInfo',
-    component: () => import('@/views/PatientInfo.vue')
+    component: () => import('@/views/PatientInfo.vue'),
+    meta: {
+      metaTitle: 'Данные пациента'
+    }
   },
   {
-    path: '/patients/:id/edit',
+    path: '/patients/:patientId/edit',
     name: 'PatientsEdit',
     component: () => import('@/views/PatientEdit.vue'),
     meta: {

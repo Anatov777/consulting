@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <app-bar />
     <v-main>
       <router-view />
     </v-main>
@@ -9,9 +10,8 @@
 <script>
 export default {
   name: "App",
-
-  data: () => ({
-    //
-  })
+  components: {
+    AppBar: () => import("@/components/AppBar")
+  }
 };
 </script>
