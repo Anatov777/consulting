@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>Добавить консультацию</h1>
     <consultation-edit-form mode="add" />
   </div>
 </template>

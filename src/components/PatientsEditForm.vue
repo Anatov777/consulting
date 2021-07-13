@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-form ref="form" v-model="valid" lazy-validation>
+    <v-form class="form-primary" ref="form" v-model="valid" lazy-validation>
       <v-text-field
         v-model="fields.surname"
         :error-messages="surnameErrors"
@@ -77,7 +77,9 @@
 
       <v-btn color="error" class="mr-4" @click="reset"> Очистить </v-btn>
 
-      <v-btn color="error" class="mr-4" @click="setTestData"> Заполнить </v-btn>
+      <v-btn color="blue-grey" dark class="mr-4" @click="setTestData">
+        Заполнить
+      </v-btn>
     </v-form>
   </div>
 </template>
@@ -122,14 +124,6 @@ export default {
       height: null,
       age: null
     },
-    // Fields rules
-    // requiredRule: [(v) => !!v || "Обязательное поле"],
-    // birthdayRules: [(v) => !!v || "Обязательное поле"],
-    // snilsRules: [
-    //   (v) => !!v || "Обязательное поле",
-    //   (v) => isValidSnils(v) || "Неверная контрольная сумма СНИЛС"
-    // ],
-    // select: null,
     genders: ["Мужской", "Женский"]
   }),
   created() {

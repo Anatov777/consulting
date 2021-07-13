@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>Создание пациента</h1>
     <patients-edit-form mode="add" />
   </div>
 </template>

@@ -1,15 +1,22 @@
 <template>
   <div>
-    <h2>Консультации пациента</h2>
+    <v-row>
+      <v-col>
+        <h2>Консультации пациента</h2>
+      </v-col>
+      <v-col>
+        <base-button
+          :path-to="`/patients/${patientId}/consultation/add`"
+          text="Добавить консультацию"
+        />
+      </v-col>
+    </v-row>
 
-    {{ GET_CONSULTATIONS_BY_PATIENT(patientId) }}
-
-    <base-button
-      :path-to="`/patients/${patientId}/consultation/add`"
-      text="Добавить консультацию"
-    />
-
-    <v-data-table :headers="headers" :items="patientConsultations">
+    <v-data-table
+      class="mt-10"
+      :headers="headers"
+      :items="patientConsultations"
+    >
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon
           class="mr-2"
@@ -22,6 +29,7 @@
           mdi-delete
         </v-icon>
       </template>
+      <template slot="no-data"> Нет консультаций </template>
     </v-data-table>
 
     <v-dialog v-model="dialogDelete" max-width="500px">

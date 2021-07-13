@@ -1,7 +1,6 @@
 <template>
   <div>
-    <h1>Данные пациента</h1>
-    <v-simple-table>
+    <v-simple-table class="mt-10">
       <template v-slot:default>
         <!-- <thead>
           <tr>
@@ -16,9 +15,10 @@
           </tr>
         </tbody>
       </template>
+      <template slot="no-data"> Нет данных </template>
     </v-simple-table>
 
-    <patient-consultation />
+    <patient-consultation class="mt-10" />
   </div>
 </template>
 

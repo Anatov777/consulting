@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-form ref="form" v-model="valid" lazy-validation>
+    <v-form class="form-primary" ref="form" v-model="valid" lazy-validation>
       <v-menu
         ref="dateMenu"
         v-model="dateMenu"
@@ -93,7 +93,9 @@
 
       <v-btn color="error" class="mr-4" @click="reset"> Очистить </v-btn>
 
-      <v-btn color="error" class="mr-4" @click="setTestData"> Заполнить </v-btn>
+      <v-btn color="blue-grey" dark class="mr-4" @click="setTestData">
+        Заполнить
+      </v-btn>
     </v-form>
   </div>
 </template>
@@ -279,7 +281,7 @@ export default {
     setTestData() {
       this.fields.date = "2020-11-11";
       this.fields.time = "15:30";
-      this.fields.symptoms = "Кашель, температура. И больше ничего";
+      this.fields.symptoms = "Кашель, температура. Что-то еще";
     }
   }
 };

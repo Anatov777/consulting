@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center">
+  <div class="text-end">
     <v-btn :to="pathTo" rounded color="primary" dark>
       {{ text }}
     </v-btn>

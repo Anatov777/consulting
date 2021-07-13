@@ -33,6 +33,7 @@
             mdi-delete
           </v-icon>
         </template>
+        <template slot="no-data"> Нет пациентов </template>
       </v-data-table>
 
       <v-dialog v-model="dialogDelete" max-width="500px">
