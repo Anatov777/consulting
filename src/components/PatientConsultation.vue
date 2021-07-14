@@ -108,8 +108,8 @@ export default {
     closeDelete() {
       this.dialogDelete = false;
     },
-    deleteItemConfirm() {
-      this.DELETE_CONSULTATION(this.deletedIndex);
+    async deleteItemConfirm() {
+      await this.DELETE_CONSULTATION(this.deletedIndex);
       this.dialogDelete = false;
     }
   }

@@ -1,14 +1,8 @@
 <template>
   <div>
     <v-container>
-      <v-simple-table class="mt-10">
+      <v-simple-table class="mt-10 patient-info-table">
         <template v-slot:default>
-          <!-- <thead>
-          <tr>
-            <th class="text-left">Свойство</th>
-            <th class="text-left">Значение</th>
-          </tr>
-        </thead> -->
           <tbody>
             <tr v-for="item in headers" :key="item.id">
               <td>
@@ -27,7 +21,6 @@
 </template>
 
 <script>
-// import HelloWorld from "@/components/HelloWorld.vue";
 import { mapGetters } from "vuex";
 
 export default {

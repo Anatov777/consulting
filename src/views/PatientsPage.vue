@@ -43,7 +43,7 @@
             <v-btn color="blue darken-1" text @click="closeDelete"
               >Отмена</v-btn
             >
-            <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+            <v-btn color="blue darken-1" text @click="deletePatientConfirm"
               >OK</v-btn
             >
             <v-spacer></v-spacer>
@@ -63,7 +63,7 @@ export default {
     return {
       search: "",
       dialogDelete: false,
-      deletedIndex: null,
+      deletedPatientIndex: null,
       deletedConsultations: null,
       headers: [
         {
@@ -79,20 +79,6 @@ export default {
         { text: "Рост", value: "height" },
         { text: "Возраст", value: "age" },
         { text: "Действия", value: "actions", sortable: false }
-      ],
-      patients: [
-        {
-          surname: "Иванов",
-          name: "Иван",
-          patronymic: "Иванович",
-          snils: "111-222"
-        },
-        {
-          surname: "Иванов",
-          name: "Петр",
-          patronymic: "Иванович",
-          snils: "333-444"
-        }
       ]
     };
   },
@@ -118,7 +104,7 @@ export default {
       });
     },
     deletePatient(patientData) {
-      this.deletedIndex = this.GET_PATIENTS.indexOf(patientData);
+      this.deletedPatientIndex = this.GET_PATIENTS.indexOf(patientData);
       this.deletedConsultations = [
         ...this.GET_CONSULTATIONS_BY_PATIENT(patientData.id)
       ];
@@ -127,8 +113,8 @@ export default {
     closeDelete() {
       this.dialogDelete = false;
     },
-    async deleteItemConfirm() {
-      await this.DELETE_PATIENT(this.deletedIndex);
+    async deletePatientConfirm() {
+      await this.DELETE_PATIENT(this.deletedPatientIndex);
       await this.deletePatientConsultations();
       this.dialogDelete = false;
     },

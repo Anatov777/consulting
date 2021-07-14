@@ -88,6 +88,7 @@
 import { mapGetters, mapActions } from "vuex";
 import { required, numeric } from "vuelidate/lib/validators";
 import isValidSnils from "@/functions/checkSnils.js";
+import capitalizeFirstLetter from "@/functions/stringFunctions.js";
 import moment from "moment";
 
 export default {
@@ -120,9 +121,9 @@ export default {
       birthday: "",
       gender: "",
       snils: "",
-      weight: null,
-      height: null,
-      age: null
+      weight: "",
+      height: "",
+      age: ""
     },
     genders: ["Мужской", "Женский"]
   }),
@@ -237,18 +238,18 @@ export default {
       await this.$v.$touch();
       if (this.valid) {
         if (this.isEditMode) {
-          this.editPatient();
+          await this.editPatient();
         } else {
-          this.createPatient();
+          await this.createPatient();
         }
         this.toPatientsPage();
       }
     },
     getPatientData() {
       return {
-        name: this.fields.name,
-        surname: this.fields.surname,
-        patronymic: this.fields.patronymic,
+        name: this.setValidName(this.fields.name),
+        surname: this.setValidName(this.fields.surname),
+        patronymic: this.setValidName(this.fields.patronymic),
         birthday: this.fields.birthday,
         gender: this.fields.gender,
         snils: this.fields.snils,
@@ -257,14 +258,22 @@ export default {
         age: this.fields.age
       };
     },
-    createPatient() {
-      const patientData = this.getPatientData();
-      this.ADD_PATIENT(patientData);
+    setValidName(value) {
+      if (value) {
+        let lowerCaseString = value.toLowerCase();
+        return capitalizeFirstLetter(lowerCaseString);
+      } else {
+        return "";
+      }
     },
-    editPatient() {
+    async createPatient() {
+      const patientData = await this.getPatientData();
+      await this.ADD_PATIENT(patientData);
+    },
+    async editPatient() {
       let patientData = this.getPatientData();
       patientData.id = `${this.patientId}`;
-      this.EDIT_PATIENT(patientData);
+      await this.EDIT_PATIENT(patientData);
     },
     toPatientsPage() {
       return window.history.length > 2

@@ -23,19 +23,24 @@ const actions = {
 
 const mutations = {
   ADD_PATIENT_MUTATION: (state, patient) => {
-    patient.id = `${+state.patients[state.patients.length - 1].id + 1 }`
+    let lastPatientId = +state.patients[state.patients.length - 1]?.id || 0
+    patient.id = `${ lastPatientId + 1 }`
     state.patients.push(patient)
-    localStorage.setItem('patients', JSON.stringify(state.patients))
+    setLocalStorageData(state)
   },
   EDIT_PATIENT_MUTATION: (state, patientData) => {
     const index = state.patients.findIndex((item) => item.id === patientData.id)
     state.patients.splice(index, 1, patientData)
-    localStorage.setItem('patients', JSON.stringify(state.patients))
+    setLocalStorageData(state)
   },
   DELETE_PATIENT_MUTATION: (state, index) => {
     state.patients.splice(index, 1)
-    localStorage.setItem('patients', JSON.stringify(state.patients))
+    setLocalStorageData(state)
   }
+}
+
+function setLocalStorageData(state) {
+  localStorage.setItem('patients', JSON.stringify(state.patients))
 }
 
 export default {

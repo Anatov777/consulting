@@ -92,12 +92,7 @@
       </v-btn>
 
       <v-btn color="error" class="mr-4" @click="reset"> Очистить </v-btn>
-
-      <v-btn color="blue-grey" dark class="mr-4" @click="setTestData">
-        Заполнить
-      </v-btn>
     </v-form>
-    {{ notAllowedConsultationTimes }}
   </div>
 </template>
 
@@ -158,17 +153,24 @@ export default {
         ? this.moment(this.fields.date).format("DD/MM/YYYY")
         : "";
     },
+    // Свойство notAllowedConsultationTimes возвращает объект,
+    // у которого ключи = часам уже занятых консультаций, а значения = массив с занятыми минутами
+    // Например
+    //   {
+    //     "15": ["00", "15", "45"],
+    //     "17": ["30","45"]
+    //   }
     notAllowedConsultationTimes() {
-      return this.GET_CONSULTATIONS.reduce((acc, cur) => {
-        if (this.fields.date === cur.date) {
-          const time = cur.time.split(":");
-          if (!acc[time[0]]) {
-            acc[time[0]] = [];
+      return this.GET_CONSULTATIONS.reduce((accumulator, currentValue) => {
+        if (this.fields.date === currentValue.date) {
+          const time = currentValue.time.split(":");
+          if (!accumulator[time[0]]) {
+            accumulator[time[0]] = [];
           }
 
-          acc[time[0]].push(`${time[1]}`);
+          accumulator[time[0]].push(`${time[1]}`);
         }
-        return acc;
+        return accumulator;
       }, {});
     },
 
@@ -199,25 +201,19 @@ export default {
 
   methods: {
     ...mapActions(["ADD_CONSULTATION", "EDIT_CONSULTATION"]),
-    // validate() {
-    //   this.$refs.form.validate();
-    // },
     reset() {
       this.$refs.form.reset();
       this.fields.date = null;
       this.fields.time = null;
       this.fields.symptoms = "";
     },
-    // resetValidation() {
-    //   this.$refs.form.resetValidation();
-    // },
     async submitForm() {
       await this.$v.$touch();
       if (this.valid) {
         if (this.isEditMode) {
-          this.editConsultation();
+          await this.editConsultation();
         } else {
-          this.addConsultation();
+          await this.addConsultation();
         }
         this.toPatientInfoPage();
       }
@@ -230,14 +226,14 @@ export default {
         patientId: this.patientId
       };
     },
-    addConsultation() {
+    async addConsultation() {
       const consultationData = this.getConsultationData();
-      this.ADD_CONSULTATION(consultationData);
+      await this.ADD_CONSULTATION(consultationData);
     },
-    editConsultation() {
+    async editConsultation() {
       let consultationData = this.getConsultationData();
       consultationData.id = `${this.consultationId}`;
-      this.EDIT_CONSULTATION(consultationData);
+      await this.EDIT_CONSULTATION(consultationData);
     },
     // Формат value = 2021-07-24
     allowedDates(value) {
@@ -247,6 +243,10 @@ export default {
           : this.moment().format("YYYY-MM-DD");
       return value >= firstAllowedDate;
     },
+    // Учитываем запрет выбора часа, если текущие минуты более 45
+    // (если выбран сегодняшний день в дате).
+    // Если длина массив занятых часов = 4, то запрещаем выбор часа
+    // (так как интервал доступных минут высавлен на 15 минут)
     allowedHours(value) {
       return (
         value >= 8 &&
@@ -275,12 +275,6 @@ export default {
       return window.history.length > 2
         ? this.$router.go(-1)
         : this.$router.push("/patients");
-    },
-    // TEST
-    setTestData() {
-      this.fields.date = "2021-07-30";
-      this.fields.time = "15:30";
-      this.fields.symptoms = "Кашель, температура. Что-то еще";
     }
   }
 };

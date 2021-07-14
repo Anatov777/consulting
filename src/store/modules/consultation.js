@@ -29,17 +29,21 @@ const mutations = {
     const lastElementId = +state.consultations[state.consultations.length - 1]?.id || 0
     consultationData.id = `${ lastElementId + 1}`
     state.consultations.push(consultationData)
-    localStorage.setItem('consultations', JSON.stringify(state.consultations))
+    setLocalStorageData(state)
   },
   EDIT_CONSULTATION_MUTATION: (state, consultationData) => {
     const index = state.consultations.findIndex((item) => item.id === consultationData.id)
     state.consultations.splice(index, 1, consultationData)
-    localStorage.setItem('consultations', JSON.stringify(state.consultations))
+    setLocalStorageData(state)
   },
   DELETE_CONSULTATION_MUTATION: (state, index) => {
     state.consultations.splice(index, 1)
-    localStorage.setItem('consultations', JSON.stringify(state.consultations))
+    setLocalStorageData(state)
   }
+}
+
+function setLocalStorageData(state) {
+  localStorage.setItem('consultations', JSON.stringify(state.consultations))
 }
 
 export default {
