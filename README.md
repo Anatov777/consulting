@@ -1,24 +1,8 @@
-# consulting
+# Demo
+https://anatov777.github.io/consulting/
+# Описание
+Учетную система "Консультации" для автоматизации работы с консультациями пациентов.
 
-## Project setup
-```
-npm install
-```
+Операции добавления, редактирования, удаления пациентов и их консультаций осуществляются через хранилище Vuex.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Данные о пациентах и коснультациях хранятся в localStorage.
