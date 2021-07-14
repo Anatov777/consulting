@@ -21,6 +21,11 @@
         path-to="/patients/add"
         text="Добавить пациента"
       />
+      <base-button
+        v-if="isPatientInfoPage"
+        :path-to="`${$route.path}/edit`"
+        text="Редактировать данные"
+      />
     </v-app-bar>
   </div>
 </template>
@@ -44,6 +49,9 @@ export default {
     isPatientsPage() {
       return this.$route.path === "/patients";
     },
+    isPatientInfoPage() {
+      return this.$route.name === "PatientInfo";
+    },
     pageTitle() {
       return this.$route.meta.metaTitle;
     }
@@ -63,6 +71,12 @@ export default {
   }
 };
 </script>
-
-
-
+<style>
+.v-toolbar__content {
+  flex-wrap: wrap;
+}
+.v-toolbar,
+.v-toolbar__content {
+  height: fit-content !important;
+}
+</style>

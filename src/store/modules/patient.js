@@ -28,7 +28,7 @@ const mutations = {
     localStorage.setItem('patients', JSON.stringify(state.patients))
   },
   EDIT_PATIENT_MUTATION: (state, patientData) => {
-    const index = state.patients.findIndex((item) => item.id === +patientData.id)
+    const index = state.patients.findIndex((item) => item.id === patientData.id)
     state.patients.splice(index, 1, patientData)
     localStorage.setItem('patients', JSON.stringify(state.patients))
   },

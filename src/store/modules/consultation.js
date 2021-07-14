@@ -26,12 +26,13 @@ const actions = {
 
 const mutations = {
   ADD_CONSULTATION_MUTATION: (state, consultationData) => {
-    consultationData.id = `${+state.consultations[state.consultations.length - 1].id + 1}`
+    const lastElementId = +state.consultations[state.consultations.length - 1]?.id || 0
+    consultationData.id = `${ lastElementId + 1}`
     state.consultations.push(consultationData)
     localStorage.setItem('consultations', JSON.stringify(state.consultations))
   },
   EDIT_CONSULTATION_MUTATION: (state, consultationData) => {
-    const index = state.consultations.findIndex((item) => item.id === +consultationData.id)
+    const index = state.consultations.findIndex((item) => item.id === consultationData.id)
     state.consultations.splice(index, 1, consultationData)
     localStorage.setItem('consultations', JSON.stringify(state.consultations))
   },

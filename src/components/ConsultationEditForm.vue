@@ -97,6 +97,7 @@
         Заполнить
       </v-btn>
     </v-form>
+    {{ notAllowedConsultationTimes }}
   </div>
 </template>
 
@@ -122,7 +123,7 @@ export default {
     valid: true,
     fields: {
       date: "",
-      time: null,
+      time: "",
       symptoms: ""
     },
     dateMenu: false,
@@ -221,23 +222,21 @@ export default {
         this.toPatientInfoPage();
       }
     },
-    addConsultation() {
-      const consultationData = {
+    getConsultationData() {
+      return {
         date: this.fields.date,
         time: this.fields.time,
         symptoms: this.fields.symptoms,
         patientId: this.patientId
       };
+    },
+    addConsultation() {
+      const consultationData = this.getConsultationData();
       this.ADD_CONSULTATION(consultationData);
     },
     editConsultation() {
-      const consultationData = {
-        date: this.fields.date,
-        time: this.fields.time,
-        symptoms: this.fields.symptoms,
-        patientId: this.patientId,
-        id: `${this.consultationId}`
-      };
+      let consultationData = this.getConsultationData();
+      consultationData.id = `${this.consultationId}`;
       this.EDIT_CONSULTATION(consultationData);
     },
     // Формат value = 2021-07-24
@@ -262,7 +261,7 @@ export default {
       return (
         value % 15 === 0 &&
         !this.notAllowedConsultationTimes[this.selectedHour]?.includes(
-          `${value}`
+          `${this.getTimeWithInitialZero(value)}`
         )
       );
     },
@@ -270,7 +269,7 @@ export default {
       return value < 10 ? (value = `0${value}`) : value;
     },
     setSelectedHour(value) {
-      this.selectedHour = value;
+      this.selectedHour = this.getTimeWithInitialZero(value);
     },
     toPatientInfoPage() {
       return window.history.length > 2
@@ -279,7 +278,7 @@ export default {
     },
     // TEST
     setTestData() {
-      this.fields.date = "2020-11-11";
+      this.fields.date = "2021-07-30";
       this.fields.time = "15:30";
       this.fields.symptoms = "Кашель, температура. Что-то еще";
     }

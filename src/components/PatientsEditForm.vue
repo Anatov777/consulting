@@ -221,9 +221,6 @@ export default {
 
   methods: {
     ...mapActions(["ADD_PATIENT", "EDIT_PATIENT"]),
-    // validate() {
-    //   this.$refs.form.validate();
-    // },
     reset() {
       this.$refs.form.reset();
       this.fields.surname = "";
@@ -244,6 +241,7 @@ export default {
         } else {
           this.createPatient();
         }
+        this.toPatientsPage();
       }
     },
     getPatientData() {
@@ -268,7 +266,11 @@ export default {
       patientData.id = `${this.patientId}`;
       this.EDIT_PATIENT(patientData);
     },
-    // TEST
+    toPatientsPage() {
+      return window.history.length > 2
+        ? this.$router.go(-1)
+        : this.$router.push("/patients");
+    },
     setTestData() {
       this.fields.surname = "Петров";
       this.fields.name = "Петр";
